@@ -15,38 +15,47 @@ const PaymentModal = ({ visible, onClose, onPay }) => {
       <View style={styles.overlay}>
         <View style={styles.modal}>
           <Text style={styles.title}>Choose Payment Mode</Text>
+          <View style={styles.divider} />
 
           <Text style={styles.section}>Wallet</Text>
-          {['PL Wallet', 'PL Currency'].map(option => (
-            <TouchableOpacity
-              key={option}
-              style={styles.optionRow}
-              onPress={() => setWalletOption(option)}
-            >
-              <View style={[styles.colorBox, {
-                backgroundColor: option === 'PL Wallet' ? 'green' : 'orange'
-              }]} />
-              <Text style={styles.optionText}>{option}</Text>
-              <Text style={styles.credit}>₹100.00</Text>
-              <View style={styles.radioCircle}>
-                {walletOption === option && <View style={styles.selectedRb} />}
-              </View>
-            </TouchableOpacity>
-          ))}
+          <View style={styles.optionBox}>
+            {['PL Wallet', 'PL Currency'].map((option, idx) => (
+              <React.Fragment key={option}>
+                <TouchableOpacity
+                  style={styles.optionRow}
+                  onPress={() => setWalletOption(option)}
+                >
+                  <View style={[styles.colorBox, {
+                    backgroundColor: option === 'PL Wallet' ? 'green' : 'orange'
+                  }]} />
+                  <Text style={styles.optionText}>{option}</Text>
+                  <Text style={styles.credit}>₹100.00</Text>
+                  <View style={styles.radioCircle}>
+                    {walletOption === option && <View style={styles.selectedRb} />}
+                  </View>
+                </TouchableOpacity>
+                {idx < 1 && <View style={styles.innerDivider} />}
+              </React.Fragment>
+            ))}
+          </View>
 
           <Text style={styles.section}>Payment gateway</Text>
-          {['Plur', 'Pay U'].map(option => (
-            <TouchableOpacity
-              key={option}
-              style={styles.optionRow}
-              onPress={() => setGatewayOption(option)}
-            >
-              <Text style={styles.optionText}>{option}</Text>
-              <View style={styles.radioCircle}>
-                {gatewayOption === option && <View style={styles.selectedRb} />}
-              </View>
-            </TouchableOpacity>
-          ))}
+          <View style={styles.optionBox}>
+            {['Plur', 'Pay U'].map((option, idx) => (
+              <React.Fragment key={option}>
+                <TouchableOpacity
+                  style={styles.optionRow}
+                  onPress={() => setGatewayOption(option)}
+                >
+                  <Text style={[styles.optionText, { marginLeft: 5 }]}>{option}</Text>
+                  <View style={styles.radioCircle}>
+                    {gatewayOption === option && <View style={styles.selectedRb} />}
+                  </View>
+                </TouchableOpacity>
+                {idx < 1 && <View style={styles.innerDivider} />}
+              </React.Fragment>
+            ))}
+          </View>
 
           <Pressable style={styles.payButton} onPress={onPay}>
             <Text style={styles.payText}>Pay</Text>
@@ -58,7 +67,6 @@ const PaymentModal = ({ visible, onClose, onPay }) => {
 };
 
 export default PaymentModal;
-
 
 const styles = StyleSheet.create({
   overlay: {
@@ -77,16 +85,33 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 10,
   },
+  divider: {
+    height: 1,
+    backgroundColor: '#ccc',
+    marginBottom: 15,
+  },
   section: {
     fontSize: 14,
     fontWeight: '500',
-    marginTop: 20,
-    marginBottom: 10,
+    marginTop: 10,
+    marginBottom: 8,
+  },
+  optionBox: {
+    backgroundColor: '#F5F5F5',
+    borderRadius: 8,
+    paddingVertical: 5,
+    marginBottom: 20,
   },
   optionRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 15,
+    paddingHorizontal: 10,
+    paddingVertical: 12,
+  },
+  innerDivider: {
+    height: 1,
+    backgroundColor: '#DDD',
+    marginHorizontal: 10,
   },
   colorBox: {
     width: 12,
@@ -119,7 +144,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
   },
   payButton: {
-    marginTop: 30,
+    marginTop: 10,
     backgroundColor: '#000',
     paddingVertical: 12,
     borderRadius: 8,
@@ -131,4 +156,3 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
-
