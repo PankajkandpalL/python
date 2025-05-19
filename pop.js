@@ -1,158 +1,90 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, TouchableOpacity, StyleSheet, Pressable } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList,
+  Button,
+} from 'react-native';
 
-const PaymentModal = ({ visible, onClose, onPay }) => {
-  const [walletOption, setWalletOption] = useState('PL Wallet');
-  const [gatewayOption, setGatewayOption] = useState('Plur');
+const WalletScreen = () => {
+  const [wallets, setWallets] = useState([
+    { id: '1', name: 'PL Wallet', balance: 1000 },
+    { id: '2', name: 'PL Currency', balance: 1000 },
+  ]);
+
+  const [selectedWallet, setSelectedWallet] = useState(null);
+
+  const addAmount = (amount) => {
+    setWallets((prevWallets) =>
+      prevWallets.map((wallet) =>
+        wallet.id === selectedWallet.id
+          ? { ...wallet, balance: wallet.balance + amount }
+          : wallet
+      )
+    );
+  };
 
   return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      transparent
-      onRequestClose={onClose}
-    >
-      <View style={styles.overlay}>
-        <View style={styles.modal}>
-          <Text style={styles.title}>Choose Payment Mode</Text>
-          <View style={styles.divider} />
+    <View style={styles.container}>
+      <Text style={styles.title}>Wallets & payments</Text>
 
-          <Text style={styles.section}>Wallet</Text>
-          <View style={styles.optionBox}>
-            {['PL Wallet', 'PL Currency'].map((option, idx) => (
-              <React.Fragment key={option}>
-                <TouchableOpacity
-                  style={styles.optionRow}
-                  onPress={() => setWalletOption(option)}
-                >
-                  <View style={[styles.colorBox, {
-                    backgroundColor: option === 'PL Wallet' ? 'green' : 'orange'
-                  }]} />
-                  <Text style={styles.optionText}>{option}</Text>
-                  <Text style={styles.credit}>₹100.00</Text>
-                  <View style={styles.radioCircle}>
-                    {walletOption === option && <View style={styles.selectedRb} />}
-                  </View>
-                </TouchableOpacity>
-                {idx < 1 && <View style={styles.innerDivider} />}
-              </React.Fragment>
+      <FlatList
+        data={wallets}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.walletCard}
+            onPress={() => setSelectedWallet(item)}
+          >
+            <Text style={styles.walletTitle}>{item.name}</Text>
+            <Text style={styles.walletBalance}>₹{item.balance.toFixed(2)}</Text>
+          </TouchableOpacity>
+        )}
+      />
+
+      {selectedWallet && (
+        <View style={styles.addMoneySection}>
+          <Text style={styles.sectionTitle}>Add Money to {selectedWallet.name}</Text>
+          <View style={styles.amountRow}>
+            {[100, 500, 1000].map((amt) => (
+              <TouchableOpacity
+                key={amt}
+                style={styles.amountButton}
+                onPress={() => addAmount(amt)}
+              >
+                <Text style={styles.amountText}>+₹{amt}</Text>
+              </TouchableOpacity>
             ))}
           </View>
-
-          <Text style={styles.section}>Payment gateway</Text>
-          <View style={styles.optionBox}>
-            {['Plur', 'Pay U'].map((option, idx) => (
-              <React.Fragment key={option}>
-                <TouchableOpacity
-                  style={styles.optionRow}
-                  onPress={() => setGatewayOption(option)}
-                >
-                  <Text style={[styles.optionText, { marginLeft: 5 }]}>{option}</Text>
-                  <View style={styles.radioCircle}>
-                    {gatewayOption === option && <View style={styles.selectedRb} />}
-                  </View>
-                </TouchableOpacity>
-                {idx < 1 && <View style={styles.innerDivider} />}
-              </React.Fragment>
-            ))}
-          </View>
-
-          <Pressable style={styles.payButton} onPress={onPay}>
-            <Text style={styles.payText}>Pay</Text>
-          </Pressable>
         </View>
-      </View>
-    </Modal>
+      )}
+    </View>
   );
 };
 
-export default PaymentModal;
-
 const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    justifyContent: 'flex-end',
-  },
-  modal: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderTopRightRadius: 15,
-    borderTopLeftRadius: 15,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: '600',
+  container: { padding: 20, backgroundColor: '#fff', flex: 1 },
+  title: { fontSize: 22, fontWeight: 'bold', marginBottom: 20 },
+  walletCard: {
+    backgroundColor: '#f2f2f2',
+    padding: 16,
+    borderRadius: 10,
     marginBottom: 10,
   },
-  divider: {
-    height: 1,
-    backgroundColor: '#ccc',
-    marginBottom: 15,
-  },
-  section: {
-    fontSize: 14,
-    fontWeight: '500',
-    marginTop: 10,
-    marginBottom: 8,
-  },
-  optionBox: {
-    backgroundColor: '#F5F5F5',
-    borderRadius: 8,
-    paddingVertical: 5,
-    marginBottom: 20,
-  },
-  optionRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 10,
+  walletTitle: { fontSize: 16, fontWeight: '600' },
+  walletBalance: { fontSize: 16, marginTop: 4 },
+  addMoneySection: { marginTop: 30 },
+  sectionTitle: { fontSize: 18, fontWeight: '600', marginBottom: 10 },
+  amountRow: { flexDirection: 'row', justifyContent: 'space-around' },
+  amountButton: {
+    backgroundColor: '#004d40',
     paddingVertical: 12,
-  },
-  innerDivider: {
-    height: 1,
-    backgroundColor: '#DDD',
-    marginHorizontal: 10,
-  },
-  colorBox: {
-    width: 12,
-    height: 12,
-    borderRadius: 2,
-    marginRight: 10,
-  },
-  optionText: {
-    flex: 1,
-    fontSize: 16,
-  },
-  credit: {
-    fontSize: 14,
-    color: 'gray',
-    marginRight: 10,
-  },
-  radioCircle: {
-    height: 20,
-    width: 20,
-    borderRadius: 10,
-    borderWidth: 1.5,
-    borderColor: '#000',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  selectedRb: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: '#000',
-  },
-  payButton: {
-    marginTop: 10,
-    backgroundColor: '#000',
-    paddingVertical: 12,
+    paddingHorizontal: 20,
     borderRadius: 8,
-    alignItems: 'center',
   },
-  payText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
+  amountText: { color: '#fff', fontSize: 16 },
 });
+
+export default WalletScreen;
