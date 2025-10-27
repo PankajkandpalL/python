@@ -94,18 +94,28 @@
     color: #ff5f6d;
     transform: scale(1.1);
   }
+
+  audio {
+    display: none;
+  }
 </style>
 </head>
 <body>
   <h1>Hey My Love ❤️</h1>
   <p>
-    You are the reason behind my smile,  
-    the sparkle in my eyes,  
-    and the warmth in my heart.  
-    Every day with you feels magical. ✨  
+    You are the reason behind my smile,<br>
+    the sparkle in my eyes,<br>
+    and the warmth in my heart. ✨<br><br>
+    Every day with you feels magical.<br>
     This page is just to remind you how special you are to me. 💕
   </p>
-  <button class="btn" onclick="showHearts()">Click Me 💗</button>
+  
+  <button class="btn" onclick="startMagic()">Click Me 💗</button>
+
+  <audio id="bgMusic" loop>
+    <!-- Replace the below link with your favorite song MP3 URL -->
+    <source src="https://cdn.pixabay.com/download/audio/2023/03/05/audio_2a13e87dbf.mp3?filename=romantic-piano-144528.mp3" type="audio/mpeg">
+  </audio>
 
   <script>
     function showHearts() {
@@ -117,6 +127,12 @@
         document.body.appendChild(heart);
         setTimeout(() => heart.remove(), 5000);
       }
+    }
+
+    function startMagic() {
+      showHearts();
+      const music = document.getElementById("bgMusic");
+      music.play();
     }
   </script>
 </body>
